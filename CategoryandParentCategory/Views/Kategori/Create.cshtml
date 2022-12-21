@@ -1,0 +1,40 @@
+﻿@model CategoryandParentCategory.Models.Kategori
+@{
+    ViewBag.Title = "Create";
+   
+}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <form method="post">
+        
+              
+
+                <div class="form-group ">
+                    <label>Ad</label>
+                    <input type="text" name="Ad" class="form-control" />
+            
+
+                </div>
+                <br />
+                <div class="form-group ">
+                    <label>Açıklama</label>
+                    <input type="text" name="Aciklama" class="form-control" />
+                  
+                </div>
+                <br />
+                <div class="form-group">
+                    <label>Üst Kategori</label>
+
+                    @Html.DropDownListFor(x => x.UstKategoriId, (List<SelectListItem>)ViewBag.ktgr, "Seçiniz", new { @class = "form-control" })
+
+                </div>
+                <br />
+                <button type="submit" class="btn-outline-primary">Ekle</button>
+            </form>
+        </div>
+    </div>
+</div>
+

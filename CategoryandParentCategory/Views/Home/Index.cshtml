@@ -1,0 +1,98 @@
+﻿@model List<Kategori>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<table class="table table-bordered table table-striped">
+    <tr>
+        <th>Kategori</th>
+        <th>Açıklama</th>
+        <th>Üst Kategorisi</th>
+    </tr>
+    <tbody>
+        @*@foreach (var item in Model.AltKategoriler)
+        {
+        if (item.UstKategoriId == null)
+        {
+        <tr>
+        <td>@item.Ad</td>
+        <td>@item.Aciklama</td>
+        <td>Bu Ana Kategoridir</td>
+        </tr>
+        }
+        else
+        {
+
+        <tr>
+        <td>@item.Ad</td>
+        <td>@item.Aciklama</td>
+        <td>@item.Ad</td>
+        </tr>
+        }
+
+
+
+
+
+        }*@
+        @* bu kod blogu admin panelindeki kategoriler için yeterli olur*@
+    </tbody>
+</table>
+<h1>Ana Kategoriler</h1>
+
+<ul>
+    @foreach (var item in Model.Where(x => x.UstKategoriId == null))
+    {
+        <li>
+            <a href="#" onclick="toggleSubCategories(this); ShowSubCategories(@item.Id); return false;">@item.Ad</a>
+            <ul class="sub-categories" data-parent-id="@item.Id" style="display:none;">
+                @{
+                    await ShowSubCategories(item.Id);
+                }
+            </ul>
+        </li>
+    }
+</ul>
+
+  <script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    function toggleSubCategories(element) {
+        var subCategories = element.nextElementSibling;
+        subCategories.style.display = (subCategories.style.display === "block") ? "none" : "block";
+    }
+
+
+
+   @functions {
+    public async Task ShowSubCategories(int parentId)
+    {
+       
+            // Veritabanından ilgili kategoriye ait alt kategorileri çekip getirin
+       
+
+            foreach (var item in Model.Where(x=>x.UstKategoriId==parentId))
+            {
+                <li onclick="toggleSubCategories(this); return false;"> @item.Ad</li>
+                @if (Model.Any(x => x.UstKategoriId == item.Id))
+                {
+                    <ul class="sub-categories"  data-parent-id="@item.Id" style="display:none;">
+                        @{
+                            await ShowSubCategories(item.Id);
+                        }
+                    </ul>
+                }
+            }
+        
+    }
+}
+
+
+
+
+
+
+
+</script>
+
+
