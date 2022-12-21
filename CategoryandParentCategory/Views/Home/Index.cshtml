@@ -4,41 +4,7 @@
     ViewData["Title"] = "Home Page";
 }
 
-<table class="table table-bordered table table-striped">
-    <tr>
-        <th>Kategori</th>
-        <th>Açıklama</th>
-        <th>Üst Kategorisi</th>
-    </tr>
-    <tbody>
-        @*@foreach (var item in Model.AltKategoriler)
-        {
-        if (item.UstKategoriId == null)
-        {
-        <tr>
-        <td>@item.Ad</td>
-        <td>@item.Aciklama</td>
-        <td>Bu Ana Kategoridir</td>
-        </tr>
-        }
-        else
-        {
 
-        <tr>
-        <td>@item.Ad</td>
-        <td>@item.Aciklama</td>
-        <td>@item.Ad</td>
-        </tr>
-        }
-
-
-
-
-
-        }*@
-        @* bu kod blogu admin panelindeki kategoriler için yeterli olur*@
-    </tbody>
-</table>
 <h1>Ana Kategoriler</h1>
 
 <ul>
