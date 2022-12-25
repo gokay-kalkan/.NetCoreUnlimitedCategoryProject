@@ -15,11 +15,14 @@
             <ul class="sub-categories" data-parent-id="@item.Id" style="display:none;">
                 @{
                     await ShowSubCategories(item.Id);
+
+                   
+                    
                 }
             </ul>
         </li>
     }
-</ul>
+</ul>    @*//bağlantı etiketine tıklandığında yani a elementine, tıklanan bağlantının takip ettiği ilk HTML elementinin yani ul elementi bunun görünürlüğü değiştirilerek veri nesnesine ait alt kategoriler ul içerisinde gizlenir veya gösterilir.*@
 
   <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script>
@@ -29,29 +32,41 @@
     }
 
 
+//ShowSubCategories fonksiyonu, bir parametre olarak verilen veri nesnesinin Id değerini alır ve bu Id değerine göre alt kategorileri listeleyebilir.Bu sayede, bağlantı etiketine tıklandığında ilk seviye alt kategoriler gösterilebilir ve eğer bir alt kategorinin bağlantısına da tıklanırsa, o alt kategorinin altında yer alan alt kategoriler gösterilebilir.Bu şekilde, sınırsız bir şekilde ilerleyebilir ve her seviye alt kategoriler gösterilebilir.
 
-   @functions {
-    public async Task ShowSubCategories(int parentId)
-    {
-       
-            // Veritabanından ilgili kategoriye ait alt kategorileri çekip getirin
-       
-
-            foreach (var item in Model.Where(x=>x.UstKategoriId==parentId))
+    @functions {
+            public async Task ShowSubCategories(int parentId)
             {
-                <li onclick="toggleSubCategories(this); return false;"> @item.Ad</li>
-                @if (Model.Any(x => x.UstKategoriId == item.Id))
+                
+        @using(CategoryandParentCategory.Context.DataContext db = new CategoryandParentCategory.Context.DataContext()){
+                
+
+        // Veritabanından ilgili kategoriye ait alt kategorileri çekin
+                var subCategories = Model.Where(x => x.UstKategoriId == parentId).ToList();
+
+                // Alt kategorileri listeleyin
+                foreach (var item in subCategories)
                 {
-                    <ul class="sub-categories"  data-parent-id="@item.Id" style="display:none;">
-                        @{
-                            await ShowSubCategories(item.Id);
-                        }
-                    </ul>
+                        <li onclick="toggleSubCategories(this); return false;" > <a href="/Kategori/KategorininÜrünleri/@item.Id" > @item.Ad</a><span>  <span> (@db.Urunler.Count(x => x.KategoriId == item.Id)) </span > </li >
+
+                    // Eğer alt kategorinin alt kategorisi varsa, alt kategorileri listeleyin
+                    if (Model.Any(x => x.UstKategoriId == item.Id))
+                    {
+                                    <ul class="sub-categories"  data-parent-id="@item.Id" style="display:none;">
+                                    @{
+                                await ShowSubCategories(item.Id);
+
+                              
+                               
+                                    }
+                                        </ul>
+                    }
+
+                    
                 }
             }
-        
+        }
     }
-}
 
 
 
