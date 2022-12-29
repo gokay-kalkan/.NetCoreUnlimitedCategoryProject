@@ -1,49 +1,70 @@
-﻿@model List<CategoryandParentCategory.Models.Kategori>
+﻿@using System;
+@model List<CategoryandParentCategory.Models.Kategori>
 @{
     ViewData["Title"] = "Index";
 }
-
-<table class="table table-bordered table table-striped">
+<p>@Model.Count() adet kategori bulunmaktadır.</p>
+<table class="table table-bordered table table-striped mt-10">
     <tr>
-        <th>Id</th>
+       
         <th>Kategori</th>
         <th>Açıklama</th>
         <th>Üst Kategorisi</th>
         <th>Güncelle</th>
     </tr>
     <tbody>
-        @foreach (var item in Model)
-        {
-            if(item.UstKategoriId==null){
 
-            
+        @foreach (var item in Model.Where(x => x.UstKategoriId == null))
+        {
+         
             <tr>
-                <td>@item.Id</td>
+                
                 <td>@item.Ad</td>
                 <td>@item.Aciklama</td>
                 <td>Bu Ana Kategoridir</td>
                 <td><a class="btn btn-warning" href="/Kategori/Update/@item.Id">Güncelle</a></td>
             </tr>
-            }
-
-            else{
-                <tr>
-                    <td>@item.Id</td>
-                    <td>@item.Ad</td>
-                    <td>@item.Aciklama</td>
-                    <td>@item.Ad</td>
-
-                    <td><a class="btn btn-warning" href="/Kategori/Update/@item.Id">Güncelle</a></td>
-                </tr>
-            }
-            
-
-
-              
-            
+            ListAltKategoriler(item.Id, 1);
         }
+
 
     </tbody>
 </table>
 <br />
 <a href="/Kategori/Create/" class="btn btn-primary">Ekle</a>
+
+
+@functions {
+    private HashSet<int> listedIds = new HashSet<int>();
+
+
+    private void ListAltKategoriler(int ustKategoriId, int seviye)
+    {
+        // Alt kategorileri çek
+        var altKategoriler = Model.Where(x => x.UstKategoriId == ustKategoriId).OrderBy(x => x.Id);
+
+        foreach (var altKategori in altKategoriler)
+        {
+            
+            // Alt kategori listedIds değişkeninde yoksa
+            if (!listedIds.Contains(altKategori.Id))
+            {
+                // Alt kategori listedIds değişkenine ekle
+                listedIds.Add(altKategori.Id);
+
+                // Alt kategoriyi tablo satırı olarak ekle
+                <tr>
+                    
+                    <td>@altKategori.Ad</td>
+                    <td>@altKategori.Aciklama</td>
+                    <td>@Model.Where(x => x.Id == altKategori.UstKategoriId).FirstOrDefault().Ad</td>
+                    <td><a class="btn btn-warning" href="/Kategori/Update/@altKategori.Id">Güncelle</a></td>
+                </tr>
+
+                // Alt kategorinin alt kategorilerini listele
+                ListAltKategoriler(altKategori.Id, seviye + 1);
+            }
+        }
+    }
+}
+

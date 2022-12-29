@@ -14,7 +14,7 @@
             <a href="#" onclick="toggleSubCategories(this); ShowSubCategories(@item.Id); return false;">@item.Ad</a>
             <ul class="sub-categories" data-parent-id="@item.Id" style="display:none;">
                 @{
-                    await ShowSubCategories(item.Id);
+                    await ShowSubCategories(item.Id); //üst tarafta bu kategorinin id değerini alıp bu methoda gönderiyoruz bu methodda bu id ye bağlı alt kategorileri dönüp duruyor.
 
                    
                     
